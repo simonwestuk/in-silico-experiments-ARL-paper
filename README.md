@@ -1,4 +1,4 @@
-# X-ELRA: a reference implementation of Agentic Regulated Learning (ARL)
+# X-ELRA: a harness implementation of Agentic Regulated Learning (ARL)
 
 This repository is the standalone X-ELRA harness implementation and reproducible evaluation suite
 for the paper *Agentic Regulated Learning: A Bounded, Deterministic Governance Architecture for Process-Level Explainability in Adaptive Learning Systems*. It provides a bounded,
