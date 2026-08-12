@@ -1,8 +1,7 @@
 # X-ELRA: a reference implementation of Agentic Regulated Learning (ARL)
 
 This repository is the reference implementation and reproducible evaluation suite
-for the paper *Agentic Regulated Learning: An Architecture for Process-Level
-Explainability in Adaptive Learning Systems*. It provides a bounded,
+for the paper *Agentic Regulated Learning: A Bounded, Deterministic Governance Architecture for Process-Level Explainability in Adaptive Learning Systems*. It provides a bounded,
 deterministic regulatory controller that translates probabilistic perceptions and
 candidate actions into learner-facing interventions (or deliberate
 non-interventions), emitting a structured, replayable decision trace at every
