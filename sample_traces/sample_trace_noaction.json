@@ -1,0 +1,137 @@
+{
+  "learner_id": "std_demo_0002",
+  "trace_id": "13af871efa60f4f91870538e4396b88dc0ebc2f210e36904a9ce5b997e480470",
+  "timestamp": 30.0,
+  "routines_version": "v1",
+  "state_before": {
+    "mode": "STRUGGLING",
+    "mode_entered_at": 0.0,
+    "budgets": {
+      "interventions_remaining": 0,
+      "suggestions_remaining": 0
+    },
+    "cooldowns": {
+      "P3": 29.0,
+      "P8": 29.0
+    },
+    "stability_counters": {
+      "mode_transitions": 0,
+      "last_transition_times": []
+    }
+  },
+  "inputs_summary": {
+    "mastery_range": [
+      0.1,
+      0.85
+    ],
+    "engagement_level": "active",
+    "confusion_flag": true,
+    "frustration_flag": true,
+    "feature_gap": 0,
+    "candidates_count": 10
+  },
+  "routine_path": [
+    {
+      "routine_id": "P1",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P2",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P8",
+      "outcome": "BLOCKED",
+      "reason": "budget_interventions",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P3",
+      "outcome": "BLOCKED",
+      "reason": "budget_interventions",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P4",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P5",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P6",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P7",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    }
+  ],
+  "decision": {
+    "action": "recommend_next",
+    "source_routine": "DEFAULT",
+    "is_bounded_intervention": false
+  },
+  "state_after": {
+    "mode": "STRUGGLING",
+    "mode_entered_at": 0.0,
+    "budgets": {
+      "interventions_remaining": 0,
+      "suggestions_remaining": 0
+    },
+    "cooldowns": {
+      "P3": 29.0,
+      "P8": 29.0
+    },
+    "stability_counters": {
+      "mode_transitions": 0,
+      "last_transition_times": []
+    }
+  },
+  "exit_conditions": [
+    {
+      "condition": "mastery_min > 0.5",
+      "monitored_field": "mastery"
+    },
+    {
+      "condition": "clicks_14d >= 3",
+      "monitored_field": "engagement"
+    }
+  ],
+  "olm_projection": {
+    "mode_label": "Supporting",
+    "why": "You may benefit from additional support where progress has been slower.",
+    "system_behaviour": "It will offer targeted, bounded support and avoid overloading you.",
+    "expected_action": "Review the suggested support and try the next problem.",
+    "exit_conditions": "Once you show progress, support will adjust."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "toolchain": "explicit-state bounded reachability (custom checker, Python 3); deduplicated breadth-first exploration over an abstracted state key",
+  "properties": {
+    "P1_safety_budgets": "AG (0 <= interventions_remaining <= B and 0 <= suggestions_remaining <= B_s)",
+    "P2_safety_modes": "AG (mode in declared modes)",
+    "P3_liveness_cooldown_exit": "AG (mode=COOLDOWN -> AF mode!=COOLDOWN under recovery input, within the dwell+window bound)"
+  },
+  "abstraction": {
+    "perception_alphabet": [
+      "NOMINAL",
+      "STRUGGLING_m",
+      "STRUGGLING_a",
+      "LAPSED",
+      "ACCEL",
+      "CONSOL",
+      "DIAG"
+    ],
+    "state_key": "(step, mode, dwell-bucket, interventions_remaining, suggestions_remaining, cooldown elapsed-buckets, recent-transition count, budget-reset bucket); time bucketed at DT and capped"
+  },
+  "bounds": {
+    "horizon_steps": 16,
+    "dt_minutes": 2.0,
+    "node_cap": 150000
+  },
+  "coverage": {
+    "states_explored": 107635,
+    "frontier_remaining": 0,
+    "node_cap_hit": false,
+    "exhaustive_within_bound": true
+  },
+  "counterexamples": {
+    "safety_violations": 0,
+    "liveness_stuck": 0,
+    "total": 0
+  },
+  "cooldown_states_checked": 50300,
+  "max_cooldown_exit_steps": 12,
+  "cooldown_exit_bound_steps": 20
+}
