@@ -19,18 +19,25 @@ sys.path.insert(0, THIS)
 
 
 def sh(cmd):
-    print(f"\n$ {cmd}")
-    subprocess.run(cmd, shell=True, check=True)
+    print(f"\n$ {' '.join(cmd) if isinstance(cmd, (list, tuple)) else cmd}")
+    subprocess.run(cmd, check=True, cwd=ROOT)
 
 
 def main():
     # Verification first.
-    sh(f"{sys.executable} tests/test_determinism.py")
-    sh(f"{sys.executable} tests/test_boundedness.py")
-    sh(f"{sys.executable} tests/verify_properties.py")
+    sh([sys.executable, "tests/test_determinism.py"])
+    sh([sys.executable, "tests/test_boundedness.py"])
+    sh([sys.executable, "tests/verify_properties.py"])
     # Studies.
-    for mod in ("study1_oscillation", "study2_audit", "study3_robustness",
-                "study4_latency_fairness", "gen_samples"):
+    for mod in (
+        "study1_oscillation",
+        "study2_audit",
+        "study3_sensitivity",
+        "study4_robustness",
+        "study5_latency_fairness",
+        "study6_fairness",
+        "gen_samples",
+    ):
         print(f"\n===== {mod} =====")
         m = importlib.import_module(mod)
         m.main()

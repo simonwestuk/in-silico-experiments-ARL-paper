@@ -1,4 +1,4 @@
-"""Study 4 -- Runtime cost/latency and fairness (intervention-density parity).
+"""Study 5 -- Runtime cost/latency and fairness (intervention-density parity).
 
 Latency (reviewer Q10): per-decision controller evaluation + trace emission time
 as a function of candidate-set size and routine-set size, plus emitted trace size.
@@ -138,15 +138,15 @@ def main():
     rs = load_routine_set(ROUTINES)
     lat = latency_table(rs)
     fair = fairness(rs)
-    out = {"study": "study4_latency_fairness", "latency": lat, "fairness": fair}
-    save_json("study4_latency_fairness.json", out)
+    out = {"study": "study5_latency_fairness", "latency": lat, "fairness": fair}
+    save_json("study5_latency_fairness.json", out)
 
-    print("=== Study 4a: latency ===")
+    print("=== Study 5a: latency ===")
     print("candidates -> us/decision (trace bytes):",
           ", ".join(f"{r['n_candidates']}:{r['us_per_decision']}us" for r in lat["by_candidates"]))
     print("routines   -> us/decision:",
           ", ".join(f"{r['n_routines']}:{r['us_per_decision']}us" for r in lat["by_routines"]))
-    print("=== Study 4b: fairness (intervention density per hour) ===")
+    print("=== Study 5b: fairness (intervention density per hour) ===")
     for pol in ("ARL", "B1"):
         f = fair[pol]
         print(f"  {pol}: A={f['A']['density_mean']:.2f} (max/win {f['A']['max_per_window']}), "

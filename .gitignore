@@ -1,0 +1,18 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local generated artifacts
+figures/
+results/*.json
+sample_traces/*.json
+
+# Editor / OS noise
+.DS_Store

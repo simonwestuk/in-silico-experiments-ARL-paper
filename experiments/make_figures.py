@@ -72,8 +72,10 @@ def fig_oscillation():
     _save(fig, "fig6_oscillation")
 
 
+import matplotlib.ticker as mticker
+
 def fig_tradeoff():
-    d = _load("study6_sensitivity.json")
+    d = _load("study3_sensitivity.json")
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.6))
     # Panel A: cooldown-scale sweep -> boundedness/adaptivity trade-off
     ax = axes[0]
@@ -82,7 +84,13 @@ def fig_tradeoff():
     us = [r["under_support_rate"] for r in sw]
     dens = [r["density_per_h"] for r in sw]
     ln1 = ax.plot(x, us, marker="o", color="#D55E00", label="under-support rate")
-    ax.set_xscale("log"); ax.set_xlabel("cooldown scale ($\\times$ default)")
+    ax.set_xscale("log")
+    ax.set_xlabel("cooldown scale ($\\times$ default)")
+    # --- fix: explicit ticks at the sweep points, no minor labels ---
+    ax.xaxis.set_major_locator(mticker.FixedLocator(x))
+    ax.xaxis.set_major_formatter(mticker.FixedFormatter([f"{v:g}$\\times$" for v in x]))
+    ax.xaxis.set_minor_locator(mticker.NullLocator())
+    # ---------------------------------------------------------------
     ax.set_ylabel("under-support rate", color="#D55E00"); ax.set_ylim(-0.03, 1.0)
     ax2 = ax.twinx(); ax2.spines["right"].set_visible(True)
     ln2 = ax2.plot(x, dens, marker="s", color="#0072B2", label="intervention density")
@@ -98,7 +106,8 @@ def fig_tradeoff():
                    color=C[p], marker=MK[p], s=70, label=LBL[p])
     ax.set_xlabel("intervention density (per hour)")
     ax.set_ylabel("under-support rate")
-    ax.set_xscale("symlog"); ax.set_title("(b) Policies under repeated need")
+    ax.set_xscale("symlog")
+    ax.set_title("(b) Policies under repeated need")
     ax.legend(frameon=False, fontsize=8)
     _save(fig, "fig10_tradeoff")
 
@@ -141,7 +150,7 @@ def fig_audit():
 
 
 def fig_latency():
-    d = _load("study4_latency_fairness.json")["latency"]
+    d = _load("study5_latency_fairness.json")["latency"]
     fig, axes = plt.subplots(1, 2, figsize=(9, 3.4))
     ax = axes[0]
     xc = [r["n_candidates"] for r in d["by_candidates"]]
@@ -160,7 +169,7 @@ def fig_latency():
 
 
 def fig_fairness():
-    d = _load("study4_latency_fairness.json")["fairness"]
+    d = _load("study5_latency_fairness.json")["fairness"]
     fig, ax = plt.subplots(figsize=(7, 3.8))
     import numpy as np
     groups = ["A (lower need)", "B (higher need)"]

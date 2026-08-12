@@ -1,4 +1,4 @@
-"""Study 6 -- Boundedness vs adaptivity: responsiveness, support, and stability.
+"""Study 3 -- Boundedness vs adaptivity: responsiveness, support, and stability.
 
 Addresses the concern that deterministic boundedness may degrade responsiveness
 or under-support learners in dynamic contexts, and the request for sensitivity of
@@ -107,21 +107,21 @@ def main():
         sweep["cooldown_scale"].append(r)
 
     out = {
-        "study": "study6_sensitivity",
+        "study": "study3_sensitivity",
         "design": {"n_episodes": N_EP, "sigma": SIGMA,
                    "defaults": {"budget": rs.budget_interventions,
                                 "dwell_minutes": rs.dwell_minutes}},
         "policy_comparison": partA,
         "arl_sweep": sweep,
     }
-    save_json("study6_sensitivity.json", out)
+    save_json("study3_sensitivity.json", out)
 
-    print("=== Study 6a: responsiveness vs stability (default config) ===")
+    print("=== Study 3a: responsiveness vs stability (default config) ===")
     print(f"{'policy':>9} | {'delay(min)':>10} {'under-supp':>10} {'MOR/h':>7} {'dens/h':>7}")
     for name, r in partA.items():
         print(f"{name:>9} | {r['mean_delay_min']:>10.2f} {r['under_support_rate']:>10.2f} "
               f"{r['mor']:>7.2f} {r['density_per_h']:>7.2f}")
-    print("\n=== Study 6b: ARL budget sweep (stability<->support trade-off) ===")
+    print("\n=== Study 3b: ARL budget sweep (stability<->support trade-off) ===")
     for r in sweep["budget"]:
         print(f"  budget={r['value']}: delay {r['mean_delay_min']:.2f} min, "
               f"under-support {r['under_support_rate']:.2f}, MOR {r['mor']:.2f}, dens {r['density_per_h']:.2f}")

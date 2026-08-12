@@ -1,4 +1,4 @@
-"""Study 7 -- Fairness / disparate impact across learner subgroups.
+"""Study 6 -- Fairness / disparate impact across learner subgroups.
 
 Addresses the request for analysis of whether routine priorities and mode
 entries/exits differentially affect learners by proficiency or engagement. For
@@ -60,15 +60,15 @@ def main():
     rs = load_routine_set(ROUTINES)
     proficiency = {"low": "prof_low", "medium": "prof_med", "high": "prof_high"}
     out = {
-        "study": "study7_fairness",
+        "study": "study6_fairness",
         "design": {"n_per_subgroup": N, "sigma": 0.12,
                    "budget_per_window": rs.budget_interventions},
         "ARL": measure(ARLPolicy, rs, proficiency),
         "B1": measure(B1DirectML, rs, proficiency),
     }
-    save_json("study7_fairness.json", out)
+    save_json("study6_fairness.json", out)
 
-    print("=== Study 7: disparate impact across proficiency strata ===")
+    print("=== Study 6: disparate impact across proficiency strata ===")
     for pol in ("ARL", "B1"):
         print(f"\n{pol}:")
         for s in ("low", "medium", "high"):

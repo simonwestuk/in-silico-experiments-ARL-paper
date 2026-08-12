@@ -1,4 +1,4 @@
-"""Study 3 -- Concurrency, partial signals, and determinism in practice.
+"""Study 4 -- Concurrency, partial signals, and determinism in practice.
 
 Addresses the reviewer's concern that determinism may be brittle under
 asynchronous, missing, or late-arriving signals and multi-agent suggestions.
@@ -262,7 +262,7 @@ def main():
     late = late_signal_snapshot(rs)
 
     out = {
-        "study": "study3_robustness",
+        "study": "study4_robustness",
         "replay_determinism": {"matches": rd_match, "total": rd_total,
                                "rate": round(rd_match / rd_total, 6)},
         "order_invariance": {"invariant": oi_inv, "total": oi_total,
@@ -270,9 +270,9 @@ def main():
         "missing_modality_guard": guard,
         "late_signal_snapshot": late,
     }
-    save_json("study3_robustness.json", out)
+    save_json("study4_robustness.json", out)
 
-    print("=== Study 3: concurrency / partial signals / determinism ===")
+    print("=== Study 4: concurrency / partial signals / determinism ===")
     print(f"(a) Replay determinism: {rd_match}/{rd_total} "
           f"({100*rd_match/rd_total:.2f}%) decisions reproduced their hash from persisted state.")
     print(f"(b) Order-invariance: {oi_inv}/{oi_total} "

@@ -63,6 +63,34 @@
       "replay_ci": 0.0,
       "aggregate": 0.0,
       "aggregate_ci": 0.0
+    },
+    "B5": {
+      "policy_basis": 0.0,
+      "policy_basis_ci": 0.0,
+      "decision_basis": 0.0,
+      "decision_basis_ci": 0.0,
+      "boundary": 0.0,
+      "boundary_ci": 0.0,
+      "non_action": 0.0,
+      "non_action_ci": 0.0,
+      "replay": 0.0,
+      "replay_ci": 0.0,
+      "aggregate": 0.0,
+      "aggregate_ci": 0.0
+    },
+    "ARL_noAO": {
+      "policy_basis": 0.0,
+      "policy_basis_ci": 0.0,
+      "decision_basis": 0.0,
+      "decision_basis_ci": 0.0,
+      "boundary": 0.0,
+      "boundary_ci": 0.0,
+      "non_action": 0.0,
+      "non_action_ci": 0.0,
+      "replay": 0.0,
+      "replay_ci": 0.0,
+      "aggregate": 0.0,
+      "aggregate_ci": 0.0
     }
   },
   "sufficiency_action_only": {
@@ -121,6 +149,34 @@
       "replay_ci": 0.0,
       "aggregate": 0.0,
       "aggregate_ci": 0.0
+    },
+    "B5": {
+      "policy_basis": 0.0,
+      "policy_basis_ci": 0.0,
+      "decision_basis": 0.0,
+      "decision_basis_ci": 0.0,
+      "boundary": 0.0,
+      "boundary_ci": 0.0,
+      "non_action": 0.0,
+      "non_action_ci": 0.0,
+      "replay": 0.0,
+      "replay_ci": 0.0,
+      "aggregate": 0.0,
+      "aggregate_ci": 0.0
+    },
+    "ARL_noAO": {
+      "policy_basis": 0.0,
+      "policy_basis_ci": 0.0,
+      "decision_basis": 0.0,
+      "decision_basis_ci": 0.0,
+      "boundary": 0.0,
+      "boundary_ci": 0.0,
+      "non_action": 0.0,
+      "non_action_ci": 0.0,
+      "replay": 0.0,
+      "replay_ci": 0.0,
+      "aggregate": 0.0,
+      "aggregate_ci": 0.0
     }
   },
   "localization": {
@@ -155,6 +211,22 @@
       "mean_records_to_diagnose": 0.0,
       "mean_records_ci": 0.0,
       "n_interventions": 0
+    },
+    "B5": {
+      "localization_rate": 0.0,
+      "localization_rate_ci": 0.0,
+      "reason_known_rate": 0.0,
+      "mean_records_to_diagnose": 3.65,
+      "mean_records_ci": 0.16,
+      "n_interventions": 447
+    },
+    "ARL_noAO": {
+      "localization_rate": 0.0,
+      "localization_rate_ci": 0.0,
+      "reason_known_rate": 0.0,
+      "mean_records_to_diagnose": 80.0,
+      "mean_records_ci": 0.0,
+      "n_interventions": 294
     }
   }
 }
