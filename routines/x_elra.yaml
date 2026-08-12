@@ -1,0 +1,177 @@
+# =============================================================================
+# X-ELRA routine specification (ARL routine DSL, version v1)
+# -----------------------------------------------------------------------------
+# This file is the single, declarative source of truth for the X-ELRA regulatory
+# controller. It specifies (a) session budgets, (b) mode-transition stability
+# parameters, (c) the nine regulatory modes with their learner-facing labels,
+# precedence, perception-derived entry predicates, and permitted routines, and
+# (d) the eight ordered control routines with priorities, mode gating, trigger
+# predicates, objective tiers, resource costs, cooldowns, and effects.
+#
+# Predicates are boolean expressions over the perception/state namespace
+# (lowest_mastery, highest_mastery, has_mastery, impressions, clicks_14d,
+#  days_since_engagement, progress_rate, recent_completions, active_goals,
+#  confusion_flag, frustration_flag, feature_gap, n_candidates) and are evaluated
+# by a guarded evaluator (no builtins). Editing this file changes controller
+# behaviour without touching imperative code; the controller, the property tests,
+# and the bounded model checker all consume it.
+# =============================================================================
+version: v1
+
+budgets:
+  interventions: 5          # bounded interventions per reset window (safety cap)
+  suggestions: 10
+  reset_minutes: 30         # budget-reset window W
+
+stability:
+  dwell_minutes: 5          # minimum dwell time tau_dwell before a mode may change
+  oscillation_window_minutes: 30   # rolling window tau_window for oscillation test
+  oscillation_k: 3          # max transitions in tau_window before COOLDOWN
+
+# --- Regulatory modes (precedence: higher value wins when several are eligible) -
+modes:
+  - id: DIAGNOSTIC
+    label: Assessing
+    precedence: 90
+    entry: "feature_gap > 2"
+    permitted_routines: [P2, P7]
+  - id: STRUGGLING
+    label: Supporting
+    precedence: 70
+    entry: "(lowest_mastery < 0.4 and clicks_14d == 0) or confusion_flag or frustration_flag"
+    permitted_routines: [P3, P8]
+  - id: LAPSED
+    label: Reconnecting
+    precedence: 65
+    entry: "days_since_engagement > 15 and active_goals"
+    permitted_routines: [P4]
+  - id: ACCELERATING
+    label: Advancing
+    precedence: 60
+    entry: "active_goals and progress_rate >= 0.05"
+    permitted_routines: [P5]
+  - id: CONSOLIDATING
+    label: Reinforcing
+    precedence: 55
+    entry: "highest_mastery >= 0.85 and recent_completions > 0"
+    permitted_routines: [P6]
+  - id: COLD_START
+    label: Discovering
+    precedence: 40
+    entry: "impressions == 0 and not has_mastery"
+    permitted_routines: [P1]
+  - id: ORIENTATION
+    label: Exploring
+    precedence: 35
+    entry: "impressions >= 1 and impressions <= 9 and not has_mastery"
+    permitted_routines: [P1, P7]
+  - id: NOMINAL
+    label: Progressing
+    precedence: 10
+    entry: "true"          # totality: NOMINAL is always eligible as the default
+    permitted_routines: [P7]
+  - id: COOLDOWN
+    label: Resting
+    precedence: 0
+    entry: "false"          # entered only by the anti-oscillation mechanism
+    perception_inferred: false
+    permitted_routines: [P7]
+
+# --- Control routines (evaluated in descending priority order) -----------------
+routines:
+  - id: P1
+    name: Orientation Safety Net
+    version: v1
+    priority: 120
+    objective: engagement
+    permitted_modes: [COLD_START, ORIENTATION]
+    triggers: "impressions <= 9"
+    cost: {interventions: 1, suggestions: 0}
+    cooldown_minutes: 1440        # 24 h
+    action: orientation_primer
+    terminates: true
+
+  - id: P2
+    name: Data Integrity Checks
+    version: v1
+    priority: 110
+    objective: integrity
+    guard: true                   # guard routine: protects against missing data
+    permitted_modes: [DIAGNOSTIC]
+    triggers: "feature_gap > 2"
+    cost: {interventions: 1, suggestions: 0}
+    cooldown_minutes: 60          # 1 h
+    action: request_data_refresh
+    terminates: true
+
+  - id: P8
+    name: Affective Overload Intervention
+    version: v1
+    priority: 95
+    objective: affect_relief
+    permitted_modes: [STRUGGLING]
+    triggers: "confusion_flag or frustration_flag"
+    cost: {interventions: 1, suggestions: 1}
+    cooldown_minutes: 120         # 2 h
+    action: suggest_wellbeing_break
+    terminates: true
+
+  - id: P3
+    name: Struggling Learner Uplift
+    version: v1
+    priority: 90
+    objective: pedagogy
+    permitted_modes: [STRUGGLING]
+    triggers: "lowest_mastery < 0.4"
+    cost: {interventions: 1, suggestions: 3}
+    cooldown_minutes: 240         # 4 h
+    action: offer_guided_steps
+    terminates: true
+
+  - id: P4
+    name: Lapsed Learner Re-engagement
+    version: v1
+    priority: 80
+    objective: engagement
+    permitted_modes: [LAPSED]
+    triggers: "days_since_engagement > 15"
+    cost: {interventions: 1, suggestions: 0}
+    cooldown_minutes: 10080       # 7 d
+    action: send_reengagement
+    terminates: true
+
+  - id: P5
+    name: Goal Attainment Accelerator
+    version: v1
+    priority: 70
+    objective: pedagogy
+    permitted_modes: [ACCELERATING]
+    triggers: "progress_rate >= 0.05"
+    cost: {interventions: 0, suggestions: 2}
+    cooldown_minutes: 60          # 1 h
+    action: suggest_stretch_goal
+    terminates: true
+
+  - id: P6
+    name: Mastery Consolidation
+    version: v1
+    priority: 60
+    objective: pedagogy
+    permitted_modes: [CONSOLIDATING]
+    triggers: "highest_mastery >= 0.85"
+    cost: {interventions: 0, suggestions: 2}
+    cooldown_minutes: 120         # 2 h
+    action: suggest_consolidation
+    terminates: true
+
+  - id: P7
+    name: Default Hybrid Pathway
+    version: v1
+    priority: 10
+    objective: default
+    permitted_modes: [ORIENTATION, NOMINAL, DIAGNOSTIC, COOLDOWN]
+    triggers: "true"
+    cost: {interventions: 0, suggestions: 0}   # always-on pathway, unbounded by design
+    cooldown_minutes: 0
+    action: recommend_next
+    terminates: true

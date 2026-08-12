@@ -1,0 +1,61 @@
+{
+  "prefix": {
+    "prov": "http://www.w3.org/ns/prov#",
+    "arl": "https://example.org/arl#"
+  },
+  "entity": {
+    "perception:std_demo_0001:30.0": {
+      "prov:type": "arl:PerceptionSnapshot"
+    },
+    "routineset:v1": {
+      "prov:type": "arl:RoutineSet",
+      "arl:version": "v1"
+    },
+    "action:suggest_wellbeing_break": {
+      "prov:type": "arl:LearnerFacingAction"
+    },
+    "trace:7099e0df368e": {
+      "prov:type": "arl:DecisionTrace",
+      "arl:trace_id": "7099e0df368e0a502ec978b1939616ce5b7b1a1d7d14e4dd1c990742c8756f4d"
+    }
+  },
+  "activity": {
+    "decision:7099e0df368e": {
+      "prov:type": "arl:ControllerDecision",
+      "arl:mode": "STRUGGLING"
+    }
+  },
+  "agent": {
+    "arl:controller": {
+      "prov:type": "prov:SoftwareAgent"
+    }
+  },
+  "used": {
+    "_u1": {
+      "prov:activity": "decision:7099e0df368e",
+      "prov:entity": "perception:std_demo_0001:30.0"
+    },
+    "_u2": {
+      "prov:activity": "decision:7099e0df368e",
+      "prov:entity": "routineset:v1",
+      "prov:role": "arl:plan"
+    }
+  },
+  "wasGeneratedBy": {
+    "_g1": {
+      "prov:entity": "action:suggest_wellbeing_break",
+      "prov:activity": "decision:7099e0df368e"
+    },
+    "_g2": {
+      "prov:entity": "trace:7099e0df368e",
+      "prov:activity": "decision:7099e0df368e"
+    }
+  },
+  "wasAssociatedWith": {
+    "_a1": {
+      "prov:activity": "decision:7099e0df368e",
+      "prov:agent": "arl:controller",
+      "prov:plan": "routineset:v1"
+    }
+  }
+}

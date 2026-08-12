@@ -1,0 +1,96 @@
+{
+  "learner_id": "std_demo_0001",
+  "trace_id": "7099e0df368e0a502ec978b1939616ce5b7b1a1d7d14e4dd1c990742c8756f4d",
+  "timestamp": 30.0,
+  "routines_version": "v1",
+  "state_before": {
+    "mode": "STRUGGLING",
+    "mode_entered_at": 0.0,
+    "budgets": {
+      "interventions_remaining": 4,
+      "suggestions_remaining": 8
+    },
+    "cooldowns": {
+      "P6": 5.0
+    },
+    "stability_counters": {
+      "mode_transitions": 0,
+      "last_transition_times": []
+    }
+  },
+  "inputs_summary": {
+    "mastery_range": [
+      0.1,
+      0.85
+    ],
+    "engagement_level": "active",
+    "confusion_flag": true,
+    "frustration_flag": true,
+    "feature_gap": 0,
+    "candidates_count": 10
+  },
+  "routine_path": [
+    {
+      "routine_id": "P1",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P2",
+      "outcome": "SKIPPED",
+      "reason": "mode_mismatch",
+      "action_selected": null,
+      "mode_transition": null,
+      "terminated_evaluation": false
+    },
+    {
+      "routine_id": "P8",
+      "outcome": "EXECUTED_ACTION",
+      "reason": "triggers_met_and_bounded",
+      "action_selected": "suggest_wellbeing_break",
+      "mode_transition": null,
+      "terminated_evaluation": true
+    }
+  ],
+  "decision": {
+    "action": "suggest_wellbeing_break",
+    "source_routine": "P8",
+    "is_bounded_intervention": true
+  },
+  "state_after": {
+    "mode": "STRUGGLING",
+    "mode_entered_at": 0.0,
+    "budgets": {
+      "interventions_remaining": 4,
+      "suggestions_remaining": 9
+    },
+    "cooldowns": {
+      "P6": 5.0,
+      "P8": 30.0
+    },
+    "stability_counters": {
+      "mode_transitions": 0,
+      "last_transition_times": []
+    }
+  },
+  "exit_conditions": [
+    {
+      "condition": "mastery_min > 0.5",
+      "monitored_field": "mastery"
+    },
+    {
+      "condition": "clicks_14d >= 3",
+      "monitored_field": "engagement"
+    }
+  ],
+  "olm_projection": {
+    "mode_label": "Supporting",
+    "why": "You may benefit from additional support where progress has been slower.",
+    "system_behaviour": "It will offer targeted, bounded support and avoid overloading you.",
+    "expected_action": "Review the suggested support and try the next problem.",
+    "exit_conditions": "Once you show progress, support will adjust."
+  }
+}
