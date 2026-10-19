@@ -1,18 +1,35 @@
-# X-ELRA: a standalone implementation of Agentic Regulated Learning (ARL) for reproducible evaluation
+# ARL standalone implementation and in-silico evaluation suite (X-ELRA routine set)
 
-This repository is the standalone X-ELRA implementation and reproducible
-evaluation suite for the paper *Agentic Regulated Learning: A Bounded,
-Deterministic Governance Architecture for Process-Level Explainability in
-Adaptive Learning Systems*. It provides a bounded, deterministic regulatory
-controller that translates probabilistic perceptions and candidate actions
-into learner-facing interventions (or deliberate non-interventions), emitting
-a structured, replayable decision trace at every decision point.
+This repository is the standalone implementation of Agentic Regulated Learning
+(ARL) and the reproducible evaluation suite for the paper *Agentic Regulated
+Learning: A Bounded, Deterministic Governance Architecture for Process-Level
+Explainability in Adaptive Learning Systems* (West, Yang and Liu). It provides a
+bounded, deterministic regulatory controller that translates probabilistic
+perceptions and candidate actions into learner-facing interventions (or
+deliberate non-interventions), emitting a structured, replayable decision trace
+at every decision point. Every in-silico, property-based and model-checking
+result in the paper is produced by this code.
 
 The controller is **driven entirely by a declarative routine DSL**
-(`routines/x_elra.yaml`): the nine regulatory modes, the eight control routines,
-their priorities, mode gating, trigger predicates, objective tiers, budgets,
-cooldowns, and stability parameters are all specified there and consumed by the
-controller, the property tests, and the bounded model checker.
+(`routines/x_elra.yaml`), which carries the same nine regulatory modes, eight
+control routines, priorities, mode gating, budgets, cooldowns and stability
+parameters as the X-ELRA platform deployed in the paper's feasibility study
+(hence the file name), with simplified trigger predicates, abstract action
+labels and this implementation's own mode-precedence order. The DSL is consumed
+by the controller, the property tests, and the bounded model checker.
+
+## Relationship to the deployed X-ELRA platform
+
+This is a separate codebase from the X-ELRA platform whose live deployment is
+reported in Section 5.6 of the paper. That platform, and the thesis evaluation
+that exercises its deployed governance code under the same simulator and
+comparator policies as this suite, are archived separately at
+<https://github.com/simonwestuk/x-elra-release> (Zenodo
+10.5281/zenodo.21916376). The two suites share the simulator, perception
+streams, seeds, comparator baselines and metrics; they differ only in the
+controller under test. This implementation follows the ARL specification as
+written (oscillation override fires at κ = k, windowed budget reset); the
+deployed platform's implementation choices are documented in the thesis.
 
 ## Scope
 
@@ -20,72 +37,7 @@ This codebase is a research implementation built for controlled, reproducible
 evaluation: everything here runs on synthetic data, and the studies
 characterise the behaviour of the ARL design itself. It is dependency-free by
 design (no service layer, persistence, or telemetry), so it is not a
-production system, and ARL instantiations in live platforms are separate
-codebases outside the scope of this repository. Where implementation policy
-is under-determined by the ARL specification (for example the budget-reset
-policy, mode-inference precedence, and dwell anchoring), this codebase makes
-explicit, documented choices, and its results should be read as claims about
-the ARL design under those choices.
-<!-- After thesis publication, add:
-A companion repository exercising a production ARL implementation under the
-same simulator is at <URL>. -->
-
-## Layout
-
-```
-xelra/                ARL controller package
-  state.py            immutable controller state S_t (+ loss-less replay (de)serialisation)
-  dsl.py              routine-spec DSL loader + guarded predicate evaluator + objective tiers
-  modes.py            deterministic precedence-ordered mode inference
-  controller.py       the perception--reasoning--action--evaluation loop (Algorithm 1)
-  traces.py           decision-trace schema, deterministic hashing, PROV-O projection
-  perception.py       synthetic learner simulator (matched-noise perception streams)
-  baselines.py        ARL + B1 (direct-ML), B2 (rule-based ITS), B3 (OLM-only),
-                      B5 (smoothed/stabilised ML), and the ARL anti-oscillation ablation
-  metrics.py          MOR, IPI, density, audit sufficiency, fairness
-routines/x_elra.yaml  the X-ELRA routine set (single source of truth)
-experiments/          study1-6, sample-trace generation, figures, run_all
-tests/                determinism + boundedness property tests, bounded model checker
-results/              JSON outputs regenerated by the studies
-sample_traces/        example decision traces (JSON) + a PROV-O projection
-figures/              PNG copies of the generated figures
-```
-
-## Reproduce
-
-```bash
-pip install -r requirements.txt
-python3 experiments/run_all.py        # tests, model check, studies, sample traces
-python3 experiments/make_figures.py   # regenerates the figures
-```
-
-Every study is seeded, and all decision-level results are bit-reproducible
-across runs; the only exception is the wall-clock latency timings of study 5,
-which naturally vary with the host machine (their shape, not their exact
-values, is the claim).
-
-## What each study shows
-
-The current runner order in [experiments/run_all.py](experiments/run_all.py) is:
-1. `study1_oscillation`
-2. `study2_audit`
-3. `study3_sensitivity`
-4. `study4_robustness`
-5. `study5_latency_fairness`
-6. `study6_fairness`
-
-| Study | Question | Headline result |
-|------|----------|-----------------|
-| 1 (`study1_oscillation`) | Does deterministic regulation reduce intervention oscillation and improve predictability under perception noise? (H2) | At sigma=0.15, ARL mode-oscillation rate 6.7/h vs 18.6/h for a direct-ML policy (2.8x lower) and flat in noise; next-stance predictability 0.42 vs 0.01; intervention density bounded at 0.5/h (max 1 per budget window) vs ~15/h and up to 15 per window for direct-ML. |
-| 2 (`study2_audit`) | Are decision traces sufficient to reconstruct a decision, vs standard logs? (H4) | Per-property (DEMM-style) reconstructability 1.00 for ARL vs ~0 for model/rule/state logs; an intervention's responsible routine **and** its suppression context localise from a single trace vs scanning ~32 records (and failing) for a model log. |
-| 3 (`study3_sensitivity`) | How does ARL trade off responsiveness, support, and boundedness as the cooldown and budget parameters vary? | Cooldowns are the operative dial: sweeping the support-routine cooldown from a quarter to four times its default moves the under-support rate from 0% (at 2.2 interventions/h) to 75% (at 0.6/h), with a shorter-than-default region holding under-support at 0-14% at roughly 1.5-2.2 interventions/h; density stays bounded throughout. |
-| 4 (`study4_robustness`) | Does determinism survive asynchronous/missing/multi-agent signals? | 100% replay-hash reproduction; 100% invariance to candidate arrival order; missing-modality guard routes 100% of outage decisions to DIAGNOSTIC and prevents action on incomplete data in 120/120 episodes; late signals stay localised and replayable. |
-| 5 (`study5_latency_fairness`) | What does it cost, and is exposure bounded across subgroups? (Q9/Q10) | ~28 microseconds per decision (sub-ms up to 500 candidates / 128 routines); per-subgroup intervention density bounded to an equal ceiling (2/window) at a density parity of 0.84, auditable from traces, vs an unbounded 15-16/window for the direct-ML policy. |
-| 6 (`study6_fairness`) | Are interventions distributed fairly across proficiency strata? | ARL remains comparatively balanced across low, medium, and high proficiency (density parity 0.76 vs 0.45 for direct-ML), with worst-case window pressure capped at 2 for every stratum while the direct-ML baseline ranges to 15+ per window. |
-| `tests/verify_properties` | Safety/liveness of the routine set | Bounded model checking of 10^5 reachable states: 0 safety violations; every reachable COOLDOWN state exits within <=12 steps (liveness). |
-
-## Licence / data
-
-Released under the [MIT License](LICENSE). The implementation uses only
-synthetic data generated by `xelra/perception.py`; no learner data is
-included. Released for research reproducibility.
+production system. Where implementation policy is under-determined by the ARL
+specification (for example the budget-reset policy, mode-inference precedence,
+and dwell anchoring), this codebase makes explicit, documented choices, and its
+results should be read as claims about the ARL design under those choices.
